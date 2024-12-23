@@ -3,7 +3,7 @@ sys.path.insert(0, '/opt/airflow/src/')
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from pipelines.football_stadium_etl import extract_data
+from pipelines.football_stadium_etl import extract_data, transform_data, load_data
 
 
 default_args = {
@@ -28,4 +28,10 @@ with DAG(
         }
     )
 
-    extract_wikipedia_data
+    transform_wikipedia_data = PythonOperator(
+        task_id = "transform_wikipedia_data",
+        python_callable= transform_data,
+        provide_context=True
+    )
+
+    extract_wikipedia_data >> transform_wikipedia_data
