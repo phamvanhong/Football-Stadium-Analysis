@@ -26,12 +26,16 @@ def transformation(**kwargs):
     """
     Transform the data
     """
-    # Setup variables
+    # Pull the data from XCom
     data = kwargs['ti'].xcom_pull(key='stadium_data', task_ids='extract_wikipedia_data')
-    stadium_data = json.loads(stadium_data)
-    df = pd.DataFrame(stadium_data)
-    df = df.dropna()
-    df = df.drop_duplicates()
+    data = json.loads(data)
+
+    # Transformation
+    football_stadium_df = pd.DataFrame(data)
+    
+
+
+    
     kwargs['ti'].xcom_push(key='transformed_data', value=df.to_json(orient='records'))
     
     return "Data transformed and pushed to XCom"
